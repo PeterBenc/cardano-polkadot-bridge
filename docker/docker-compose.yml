@@ -1,0 +1,78 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: ${COMPOSE_PROJECT_NAME}-db
+    image: postgres:12.3-alpine
+    shm_size: 256m
+    ports:
+      - ${DB_HOST_PORT}:5432
+    environment:
+      - POSTGRES_LOGGING=true
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=cexplorer
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  cardano-node:
+    container_name: ${COMPOSE_PROJECT_NAME}-cardano-node
+    image: inputoutput/cardano-node:1.31.0
+    ports:
+      - ${CARDANO_NODE_PORT}:${CARDANO_NODE_PORT}
+    volumes:
+      - ${DATA_PATH}/node-db:/data/db
+      - ${DATA_PATH}/node-ipc:/ipc
+      - ${DATA_PATH}/configs:/configs
+    command: [
+      "run",
+      "--port", "${CARDANO_NODE_PORT}",
+      "--config", "/configs/${NETWORK}-config.json",
+      "--database-path", "/data/db",
+      "--topology", "/configs/topology.json",
+      "--socket-path", "/ipc/node.socket"
+    ]
+    restart: unless-stopped
+
+  cardano-db-sync:
+    working_dir: /var/lib/cdbsync
+    container_name: ${COMPOSE_PROJECT_NAME}-cardano-db-sync
+    image: inputoutput/cardano-db-sync:11.0.4
+    environment:
+      - NETWORK=${NETWORK}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB}
+      - RESTORE_SNAPSHOT=${RESTORE_SNAPSHOT:-}
+      - RESTORE_RECREATE_DB=N
+      - EXTENDED=true
+      # "As of today, it is absolutely mandatory for the postgres_user to be defined as cexplorer"
+      # quoted from https://github.com/input-output-hk/cardano-rest/wiki/Docker
+      - POSTGRES_USER=cexplorer
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - cardano-node
+      - postgres
+    volumes:
+      - ${DATA_PATH}/node-ipc:/node-ipc
+      - ${DATA_PATH}/db-sync-data:/var/lib/cdbsync
+      - ${DATA_PATH}/configs:/configs
+      - ${DATA_PATH}/db-sync-tmp:/tmp
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    command: --config /configs/${NETWORK}-db-sync-config.json --socket-path /node-ipc/node.socket --state-dir /var/lib/cdbsync
+
+
+volumes:
+  db-sync-data:
+  db-sync-tmp:
+  postgres:
+  node-db:
+  node-ipc:
+  configs:
+  app:
