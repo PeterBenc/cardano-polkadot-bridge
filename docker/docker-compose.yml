@@ -13,7 +13,7 @@ services:
       - POSTGRES_USER=cexplorer
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - ${CARDANO_DATA_PATH}/cardano/node/postgres:/var/lib/postgresql/data
+      - ${CARDANO_DATA_PATH}/node/postgres:/var/lib/postgresql/data
     restart: unless-stopped
 
   cardano-node:
@@ -22,8 +22,8 @@ services:
     ports:
       - ${CARDANO_NODE_PORT}:${CARDANO_NODE_PORT}
     volumes:
-      - ${CARDANO_DATA_PATH}/cardano/node/node-db:/data/db
-      - ${CARDANO_DATA_PATH}/cardano/node/node-ipc:/ipc
+      - ${CARDANO_DATA_PATH}/node/node-db:/data/db
+      - ${CARDANO_DATA_PATH}/node/node-ipc:/ipc
       - ${CARDANO_CONFIG_PATH}:/configs
     command: [
       "run",
@@ -55,10 +55,10 @@ services:
       - cardano-node
       - postgres
     volumes:
-      - ${CARDANO_DATA_PATH}/cardano/node/node-ipc:/node-ipc
-      - ${CARDANO_DATA_PATH}/cardano/node/db-sync-data:/var/lib/cdbsync
+      - ${CARDANO_DATA_PATH}/node/node-ipc:/node-ipc
+      - ${CARDANO_DATA_PATH}/node/db-sync-data:/var/lib/cdbsync
       - ${CARDANO_CONFIG_PATH}:/configs
-      - ${CARDANO_DATA_PATH}/cardano/node/db-sync-tmp:/tmp
+      - ${CARDANO_DATA_PATH}/node/db-sync-tmp:/tmp
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -66,6 +66,27 @@ services:
         max-size: "200k"
         max-file: "10"
     command: --config /configs/${NETWORK}-db-sync-config.json --socket-path /node-ipc/node.socket --state-dir /var/lib/cdbsync
+
+  polkadot-node:
+    container_name: polkadot-node
+    image: parity/polkadot:v0.9.12
+    ports:
+      - 30222:30333 # p2p port
+      - 9911:9933 # rpc port
+      - 9922:9944 # ws port
+    volumes:
+      - ${POLKADOT_DATA_PATH}:/polkadot
+      - ${POLKADOT_CHAIN_CONFIG_PATH}:/polkadot-configs
+    command: [
+      "--ws-external",
+      "--rpc-external",
+      "--discover-local",
+      "--allow-private-ipv4",
+      "--name", "${COMPOSE_PROJECT_NAME}-polkadot-node",
+      "--rpc-cors", "all",
+      "--chain=/polkadot-configs/rococo-local-raw.json",
+    ]
+  
 
 
 volumes:
@@ -76,3 +97,5 @@ volumes:
   node-ipc:
   configs:
   app:
+  polkadot:
+  polkadot-configs:

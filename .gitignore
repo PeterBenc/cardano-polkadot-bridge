@@ -1,2 +1,3 @@
 docker/cardano/node/*
 docker/polkadot/.local*
+src/polkadot/node-configs
