@@ -1,2 +1,2 @@
-cardano/node/*
-!cardano/node/configs/
+docker/cardano/node/*
+docker/polkadot/.local*

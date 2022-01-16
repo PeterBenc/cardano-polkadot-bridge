@@ -13,7 +13,7 @@ services:
       - POSTGRES_USER=cexplorer
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - ${DATA_PATH}/postgres:/var/lib/postgresql/data
+      - ${CARDANO_DATA_PATH}/cardano/node/postgres:/var/lib/postgresql/data
     restart: unless-stopped
 
   cardano-node:
@@ -22,9 +22,9 @@ services:
     ports:
       - ${CARDANO_NODE_PORT}:${CARDANO_NODE_PORT}
     volumes:
-      - ${DATA_PATH}/node-db:/data/db
-      - ${DATA_PATH}/node-ipc:/ipc
-      - ${DATA_PATH}/configs:/configs
+      - ${CARDANO_DATA_PATH}/cardano/node/node-db:/data/db
+      - ${CARDANO_DATA_PATH}/cardano/node/node-ipc:/ipc
+      - ${CARDANO_CONFIG_PATH}:/configs
     command: [
       "run",
       "--port", "${CARDANO_NODE_PORT}",
@@ -55,10 +55,10 @@ services:
       - cardano-node
       - postgres
     volumes:
-      - ${DATA_PATH}/node-ipc:/node-ipc
-      - ${DATA_PATH}/db-sync-data:/var/lib/cdbsync
-      - ${DATA_PATH}/configs:/configs
-      - ${DATA_PATH}/db-sync-tmp:/tmp
+      - ${CARDANO_DATA_PATH}/cardano/node/node-ipc:/node-ipc
+      - ${CARDANO_DATA_PATH}/cardano/node/db-sync-data:/var/lib/cdbsync
+      - ${CARDANO_CONFIG_PATH}:/configs
+      - ${CARDANO_DATA_PATH}/cardano/node/db-sync-tmp:/tmp
     restart: unless-stopped
     logging:
       driver: "json-file"
