@@ -1,5 +1,5 @@
 import express from 'express'
-import { poolDemo } from './db-sync'
+import { poolDemo } from './cardano-data'
 
 // Create Express app
 const app = express()
@@ -11,4 +11,4 @@ app.get('/', async (req, res) => {
 })
 
 // Start the Express server
-app.listen(3002, () => console.log('Server running on port 3000!'))
+app.listen(process.env.RELAYER_SERVICE_PORT || 3000, () => console.log('Server running on port 3000!'))
