@@ -107,7 +107,7 @@
     "@polkadot/util" "8.4.1"
     "@substrate/ss58-registry" "^1.14.0"
 
-"@polkadot/rpc-augment@7.10.1", "@polkadot/rpc-augment@^7.10.1":
+"@polkadot/rpc-augment@7.10.1":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-augment/-/rpc-augment-7.10.1.tgz#0b29386195a1f8523afe47a113f66a25b7f42c61"
   integrity sha512-/ECg22GAQSwD+HloiUEIiz/Yt4uw7gHYS5Hb6VjlbO3q4L1pDcT5yFneB0YoVlbjAmriS+j3wRETzohj8QWOUg==
@@ -148,7 +148,7 @@
     mock-socket "^9.1.2"
     nock "^13.2.4"
 
-"@polkadot/types-augment@7.10.1", "@polkadot/types-augment@^7.10.1":
+"@polkadot/types-augment@7.10.1":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/types-augment/-/types-augment-7.10.1.tgz#5c6ea06c72ee60dfae53b801fbac5813766c12f8"
   integrity sha512-HEE9k6ehxFwxHUTDjmfK9kO2fTYeCvK9PBUM4g/yfKJ1Os53tglO27axXT0lLWnkWIEftYznm5fOE/qj8XcPKQ==
