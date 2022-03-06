@@ -18,6 +18,9 @@
   },
   "dependencies": {
     "@polkadot/api": "^7.4.1",
+    "@polkadot/api-augment": "^7.10.1",
+    "@polkadot/rpc-augment": "^7.10.1",
+    "@polkadot/types-augment": "^7.10.1",
     "express": "^4.17.2",
     "pg": "^8.7.1"
   }
