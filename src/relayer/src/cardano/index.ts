@@ -6,9 +6,9 @@ const credentials = {
   database: "cardano",
   password: "dbpass",
   port: 5432,
-};
+}
 
-// Connect with a connection pool.
+// TODO export const subToNewHeads
 
 export async function poolDemo() {
   const pool = new Pool(credentials);
