@@ -1,7 +1,4 @@
-import "@polkadot/api-augment"
-import '@polkadot/rpc-augment'
-import '@polkadot/types-augment'
-import '@polkadot/api-augment/polkadot'
+import '@polkadot/api-augment'
 import { ApiPromise } from '@polkadot/api';
 
 // initialize via static create

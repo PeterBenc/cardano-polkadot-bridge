@@ -2,6 +2,10 @@ import express from 'express'
 import { poolDemo } from './cardano-data'
 import { subToNewHeads } from './polkadot-data'
 
+require("dotenv").config();
+
+const SERVICE_PORT = process.env.RELAYER_SERVICE_PORT
+
 // Create Express app
 const app = express()
 
@@ -13,4 +17,4 @@ app.get('/', async (req, res) => {
 })
 
 // Start the Express server
-app.listen(process.env.RELAYER_SERVICE_PORT || 3000, () => console.log('Server running on port 3000!'))
+app.listen(SERVICE_PORT, () => console.log(`Server running on port ${SERVICE_PORT}!`))

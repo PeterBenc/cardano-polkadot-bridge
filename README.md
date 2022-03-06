@@ -3,7 +3,8 @@
 # Run step
 
 1. Run polkadot-launcher https://github.com/paritytech/polkadot-launch
-2. Run `cd docker` && `sudo docker-compose up`
+2. Remove polkadot docker files so the node starts from 0
+3. Run `cd docker` && `sudo docker-compose up`
 
 # Notes
 
