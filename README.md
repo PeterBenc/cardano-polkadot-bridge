@@ -1,10 +1,14 @@
 # cardano-polkadot-bridge
 
-# Run step
+# Run steps
 
 1. Run polkadot-launcher https://github.com/paritytech/polkadot-launch
 2. Remove polkadot docker files so the node starts from 0
-3. Run `cd docker` && `sudo docker-compose up`
+3. Run `cd docker` && `docker-compose up`
+
+or 
+
+1. Run `./polkadot/run_new_testnet.sh`
 
 # Notes
 
