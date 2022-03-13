@@ -1,0 +1,3 @@
+[submodule "parachain"]
+	path = parachain
+	url = https://github.com/PeterBenc/cardano-parachain
