@@ -1,8 +1,8 @@
 import express from 'express'
-import { poolDemo } from './cardano'
-import { connectToParachain, subToNewHeads } from './polkadot'
+import {poolDemo} from './cardano'
+import {connectToParachain, subToNewHeads} from './polkadot'
 
-require("dotenv").config();
+require('dotenv').config()
 
 const SERVICE_PORT = process.env.RELAYER_SERVICE_PORT
 
@@ -23,8 +23,6 @@ const runRelayerService = async () => {
 //     await connectToParachain()
 //     // res.send(x)
 // })
-
-
 
 // Start the Express server
 app.listen(SERVICE_PORT, async () => await runRelayerService())

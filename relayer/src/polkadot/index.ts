@@ -1,6 +1,6 @@
 import '@polkadot/api-augment'
-import { ApiPromise } from '@polkadot/api';
-import { ParachainClient } from './parachain';
+import {ApiPromise} from '@polkadot/api'
+import {ParachainClient} from './parachain'
 
 const parachainEndpoint = 'ws://localhost:9966'
 
@@ -8,10 +8,10 @@ const parachainEndpoint = 'ws://localhost:9966'
 
 export const subToNewHeads = async () => {
   const api = await ApiPromise.create()
-    // make a call to retrieve the current network head
+  // make a call to retrieve the current network head
   api.rpc.chain.subscribeNewHeads((header) => {
-    console.log(`Chain is at #${header.number}`);
-  });
+    console.log(`Chain is at #${header.number}`)
+  })
 }
 
 export const connectToParachain = async () => {
@@ -19,4 +19,3 @@ export const connectToParachain = async () => {
   await sub.connect()
   await sub.getSomething('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
 }
-

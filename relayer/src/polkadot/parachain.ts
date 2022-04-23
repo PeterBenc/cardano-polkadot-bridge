@@ -1,16 +1,15 @@
 import '@polkadot/api-augment'
-import { ApiPromise, WsProvider, Keyring} from '@polkadot/api';
+import {ApiPromise, WsProvider, Keyring} from '@polkadot/api'
 
 export class ParachainClient {
-
   private _endpoint: string
   private _api: ApiPromise | null
   private _keyring: Keyring | null
 
   constructor(endpoint: string) {
-    this._endpoint = endpoint;
-    this._api = null;
-    this._keyring = null;
+    this._endpoint = endpoint
+    this._api = null
+    this._keyring = null
   }
 
   private get api() {
@@ -28,15 +27,15 @@ export class ParachainClient {
   }
 
   async connect() {
-    const provider = new WsProvider(this._endpoint);
+    const provider = new WsProvider(this._endpoint)
     this._api = await ApiPromise.create({
       provider,
     })
-    this._keyring = new Keyring({ type: 'sr25519' })
+    this._keyring = new Keyring({type: 'sr25519'})
   }
 
   async getWalletByName() {
-    const alice = this.keyRing.addFromUri('//Alice', { name: 'Alice' })
+    const alice = this.keyRing.addFromUri('//Alice', {name: 'Alice'})
     console.log(alice.address)
   }
 
@@ -49,5 +48,4 @@ export class ParachainClient {
   //   let account = await this.api.query.assets.account(assetId, accountId);
   //   return BigNumber(account.balance.toBigInt())
   // }
-
 }
