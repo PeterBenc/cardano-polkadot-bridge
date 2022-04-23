@@ -1,6 +1,6 @@
 import express from 'express'
-import {poolDemo} from './cardano'
-import {connectToParachain, subToNewHeads} from './polkadot'
+import {subToNewHeads as cSub} from './cardano'
+import {connectToParachain, subToNewHeads as pSub} from './polkadot'
 
 require('dotenv').config()
 
@@ -11,9 +11,9 @@ const app = express()
 
 const runRelayerService = async () => {
   console.log(`Server running on port ${SERVICE_PORT}!`)
-  console.log(await poolDemo())
-  await subToNewHeads()
-  await connectToParachain()
+  pSub()
+  cSub()
+  // await connectToParachain()
 }
 
 // A sample route

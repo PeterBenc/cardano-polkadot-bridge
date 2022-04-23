@@ -10,7 +10,7 @@ export const subToNewHeads = async () => {
   const api = await ApiPromise.create()
   // make a call to retrieve the current network head
   api.rpc.chain.subscribeNewHeads((header) => {
-    console.log(`Chain is at #${header.number}`)
+    console.log(`Polkadot relay chain is at #${header.number}`)
   })
 }
 
