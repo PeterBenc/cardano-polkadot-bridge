@@ -1,4 +1,5 @@
 docker/cardano/node/*
 docker/polkadot/.local*
 polkadot/*
-!polkadot/run_new_testnet.sh
+!polkadot/run_local_testnet.sh
+!polkadot/polkadot-launch-config.json

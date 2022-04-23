@@ -73,7 +73,7 @@ services:
     ports:
       - 30222:30333 # p2p port
       - 9911:9933 # rpc port
-      - 9922:9944 # ws port
+      - 9922:9977 # ws port
     volumes:
       - ${POLKADOT_DATA_PATH}:/polkadot
       - ${POLKADOT_CHAIN_CONFIG_PATH}:/polkadot-configs

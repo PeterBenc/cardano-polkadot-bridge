@@ -11,17 +11,18 @@ const app = express()
 
 const runRelayerService = async () => {
   console.log(`Server running on port ${SERVICE_PORT}!`)
+  console.log(await poolDemo())
   await subToNewHeads()
   await connectToParachain()
 }
 
 // A sample route
-app.get('/', async (req, res) => {
-    const x = await poolDemo()
-    await subToNewHeads()
-    await connectToParachain()
-    // res.send(x)
-})
+// app.get('/', async (req, res) => {
+//     console.log(await poolDemo())
+//     await subToNewHeads()
+//     await connectToParachain()
+//     // res.send(x)
+// })
 
 
 
