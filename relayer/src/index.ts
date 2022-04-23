@@ -1,6 +1,6 @@
 import express from 'express'
-import {subToNewHeads as cSub} from './cardano'
-import {connectToParachain, subToNewHeads as pSub} from './polkadot'
+import {CardanoConnection} from './cardano'
+import {RelayChainConnection} from './polkadot'
 
 require('dotenv').config()
 
@@ -9,10 +9,14 @@ const SERVICE_PORT = process.env.RELAYER_SERVICE_PORT
 // Create Express app
 const app = express()
 
+// Create connections
+const relaychainConnection = new RelayChainConnection()
+const cardanoConnection = new CardanoConnection()
+
 const runRelayerService = async () => {
   console.log(`Server running on port ${SERVICE_PORT}!`)
-  pSub()
-  cSub()
+  relaychainConnection.subToNewHeads()
+  cardanoConnection.subToNewHeads()
   // await connectToParachain()
 }
 
