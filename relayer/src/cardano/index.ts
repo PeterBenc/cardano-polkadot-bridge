@@ -24,7 +24,7 @@ export class CardanoConnection {
       const lastBlockId = Number(now.rows[0].id)
       if (lastBlockId > highestBlockId) {
         highestBlockId = lastBlockId
-        console.log(`Cardano chain is at ${highestBlockId}`)
+        console.log(`Cardano chain is at #${highestBlockId}`)
         await new Promise((resolve) => setTimeout(resolve, 5000))
       }
       await new Promise((resolve) => setTimeout(resolve, 5000))

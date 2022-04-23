@@ -1,6 +1,5 @@
 import '@polkadot/api-augment'
 import {ApiPromise} from '@polkadot/api'
-import {ParachainClient} from './parachain'
 
 export class RelayChainConnection {
   private _api: ApiPromise | null = null
@@ -21,12 +20,4 @@ export class RelayChainConnection {
       console.log(`Polkadot relay chain is at #${header.number}`)
     })
   }
-}
-
-const parachainEndpoint = 'ws://localhost:9966'
-
-export const connectToParachain = async () => {
-  const sub = new ParachainClient(parachainEndpoint)
-  await sub.connect()
-  await sub.getSomething('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
 }
