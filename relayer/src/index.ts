@@ -13,7 +13,9 @@ const app = express()
 // Create connections
 const relaychainConnection = new RelayChainConnection()
 const cardanoConnection = new CardanoConnection()
-const parachainConnection = new ParachainConnection()
+const parachainConnection = new ParachainConnection(
+  process.env.PARACHAIN_WS_ENDPOINT || '',
+)
 
 const runRelayerService = async () => {
   console.log(`Server running on port ${SERVICE_PORT}!`)

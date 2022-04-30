@@ -1,14 +1,12 @@
 import '@polkadot/api-augment'
 import {ApiPromise, WsProvider, Keyring} from '@polkadot/api'
-
-const parachainEndpoint = 'ws://localhost:9966'
 export class ParachainConnection {
   private _api: ApiPromise | null = null
   private keyRing: Keyring
   private provider: WsProvider
 
-  constructor() {
-    this.provider = new WsProvider(parachainEndpoint)
+  constructor(wsEndpoint: string) {
+    this.provider = new WsProvider(wsEndpoint)
     this.keyRing = new Keyring({type: 'sr25519'})
   }
 
