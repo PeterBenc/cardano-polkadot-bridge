@@ -1,5 +1,5 @@
 import {Pool, Client} from 'pg'
-import {wait} from '../utils'
+import {sleep} from '../utils'
 import {RawCardanoHeader, ParachainHeader, RelaychainHeader} from './types'
 
 const credentials = {
@@ -31,9 +31,9 @@ export class CardanoConnection {
         console.log(`Cardano chain is at #${highestBlockId}`)
         //TODO: get all new blocks and iterate through them
         await onNewHeader({id: lastBlockId, hash: now.rows[0].hash})
-        await wait(10000)
+        await sleep(2000)
       }
-      await wait(10000)
+      await sleep(2000)
     }
   }
 
