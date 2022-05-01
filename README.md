@@ -15,7 +15,8 @@
 
 or
 
-1. Run `./polkadot/run_new_testnet.sh`
+1. Run `cd polkadot && ./run_local_testnet.sh`
+2. Run `cd docker && docker-compose up`
 
 # Notes
 

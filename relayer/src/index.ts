@@ -2,6 +2,7 @@ import express from 'express'
 import {CardanoConnection} from './cardano'
 import {ParachainConnection} from './parachain'
 import {RelayChainConnection} from './polkadot'
+import {Relayer} from './relayer'
 
 require('dotenv').config()
 
@@ -19,10 +20,12 @@ const parachainConnection = new ParachainConnection(
 
 const runRelayerService = async () => {
   console.log(`Server running on port ${SERVICE_PORT}!`)
-  relaychainConnection.subToNewHeads()
-  cardanoConnection.subToNewHeads()
-  parachainConnection.subToNewHeads()
-  // await connectToParachain()
+  const relayer = new Relayer(
+    parachainConnection,
+    cardanoConnection,
+    relaychainConnection,
+  )
+  relayer.run()
 }
 
 // A sample route

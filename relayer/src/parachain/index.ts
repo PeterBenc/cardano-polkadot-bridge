@@ -1,5 +1,6 @@
 import '@polkadot/api-augment'
 import {ApiPromise, WsProvider, Keyring} from '@polkadot/api'
+import {CardanoBlock, RawParachainBlock} from './types'
 export class ParachainConnection {
   private _api: ApiPromise | null = null
   private keyRing: Keyring
@@ -20,34 +21,30 @@ export class ParachainConnection {
     return this._api
   }
 
-  subToNewHeads = async () => {
+  subToNewHeads = async (
+    onNewBlock: (block: RawParachainBlock) => Promise<void>,
+  ) => {
     const api = await this.api()
     // make a call to retrieve the current network head
-    api.rpc.chain.subscribeNewHeads((header) => {
+    api.rpc.chain.subscribeNewHeads(async (header) => {
       console.log(`Parachain is at #${header.number}`)
+      await onNewBlock(null) // TODO:
     })
   }
 
-  async getWalletByName() {
-    const alice = this.keyRing.addFromUri('//Alice', {name: 'Alice'})
-    console.log(alice.address)
+  submitNewCardanoBlock = async (block: CardanoBlock) => {
+    const api = await this.api()
+    // api.tx.basicChannel.submit()
+    console.log('Submitted new Cardano block', {block})
   }
 
-  async getSomething(address: string) {
-    const wallet = this.keyRing.addFromAddress(address)
-    console.log(wallet.toJson())
-  }
+  // async getWalletByName() {
+  //   const alice = this.keyRing.addFromUri('//Alice', {name: 'Alice'})
+  //   console.log(alice.address)
+  // }
 
-  // async queryAssetsAccountBalance(assetId, accountId) {
-  //   let account = await this.api.query.assets.account(assetId, accountId);
-  //   return BigNumber(account.balance.toBigInt())
+  // async getSomething(address: string) {
+  //   const wallet = this.keyRing.addFromAddress(address)
+  //   console.log(wallet.toJson())
   // }
 }
-
-// const parachainEndpoint = 'ws://localhost:9966'
-
-// export const connectToParachain = async () => {
-//   const sub = new ParachainClient(parachainEndpoint)
-//   await sub.connect()
-//   await sub.getSomething('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-// }

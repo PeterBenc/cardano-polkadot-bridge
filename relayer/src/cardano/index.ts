@@ -1,4 +1,6 @@
 import {Pool, Client} from 'pg'
+import {wait} from '../utils'
+import {RawCardanoBlock, ParachainBlock, RelaychainBlock} from './types'
 
 const credentials = {
   user: 'cexplorer',
@@ -15,7 +17,9 @@ export class CardanoConnection {
     this.pool = new Pool(credentials)
   }
 
-  subToNewHeads = async () => {
+  subToNewHeads = async (
+    onNewBlock: (block: RawCardanoBlock) => Promise<void>,
+  ) => {
     let highestBlockId = 0
     while (true) {
       const now = await this.pool.query(
@@ -25,9 +29,19 @@ export class CardanoConnection {
       if (lastBlockId > highestBlockId) {
         highestBlockId = lastBlockId
         console.log(`Cardano chain is at #${highestBlockId}`)
-        await new Promise((resolve) => setTimeout(resolve, 5000))
+        // get all new blocks and iterate through them
+        await onNewBlock(null)
+        await wait(5000)
       }
-      await new Promise((resolve) => setTimeout(resolve, 5000))
+      await wait(5000)
     }
+  }
+
+  submitNewParachainBlock = async (block: ParachainBlock) => {
+    console.log('Submitted new parachain block', {block})
+  }
+
+  submitNewRelaychainBlock = async (block: RelaychainBlock) => {
+    console.log('Submitted new relaychain block', {block})
   }
 }
