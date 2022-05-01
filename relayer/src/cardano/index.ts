@@ -1,6 +1,6 @@
 import {Pool, Client} from 'pg'
 import {wait} from '../utils'
-import {RawCardanoBlock, ParachainBlock, RelaychainBlock} from './types'
+import {RawCardanoHeader, ParachainHeader, RelaychainHeader} from './types'
 
 const credentials = {
   user: 'cexplorer',
@@ -18,7 +18,7 @@ export class CardanoConnection {
   }
 
   subToNewHeads = async (
-    onNewBlock: (block: RawCardanoBlock) => Promise<void>,
+    onNewHeader: (block: RawCardanoHeader) => Promise<void>,
   ) => {
     let highestBlockId = 0
     while (true) {
@@ -30,18 +30,18 @@ export class CardanoConnection {
         highestBlockId = lastBlockId
         console.log(`Cardano chain is at #${highestBlockId}`)
         // get all new blocks and iterate through them
-        await onNewBlock(null)
+        await onNewHeader(null)
         await wait(5000)
       }
       await wait(5000)
     }
   }
 
-  submitNewParachainBlock = async (block: ParachainBlock) => {
-    console.log('Submitted new parachain block', {block})
+  submitNewParachainHeader = async (header: ParachainHeader) => {
+    console.log('Submitted new parachain header')
   }
 
-  submitNewRelaychainBlock = async (block: RelaychainBlock) => {
-    console.log('Submitted new relaychain block', {block})
+  submitNewRelaychainHeader = async (header: RelaychainHeader) => {
+    console.log('Submitted new relaychain header')
   }
 }

@@ -1,13 +1,13 @@
 import {CardanoConnection} from '../cardano'
 import {
-  ParachainBlock,
-  RawCardanoBlock,
-  RelaychainBlock,
+  ParachainHeader,
+  RawCardanoHeader,
+  RelaychainHeader,
 } from '../cardano/types'
 import {ParachainConnection} from '../parachain'
-import {CardanoBlock, RawParachainBlock} from '../parachain/types'
+import {CardanoHeader, RawParachainHeader} from '../parachain/types'
 import {RelayChainConnection} from '../polkadot'
-import {RawRelaychainBlock} from '../polkadot/types'
+import {RawRelaychainHeader} from '../polkadot/types'
 
 export class Relayer {
   private parachainConnection: ParachainConnection
@@ -25,23 +25,23 @@ export class Relayer {
   }
 
   run = async () => {
-    this.cardanoConnection.subToNewHeads(this.submitNewCardanoBlock)
-    this.parachainConnection.subToNewHeads(this.submitNewParachainBlock)
-    this.relaychainConnection.subToNewHeads(this.submitNewRelaychainBlock)
+    this.cardanoConnection.subToNewHeads(this.submitNewCardanoHeader)
+    this.parachainConnection.subToNewHeads(this.submitNewParachainHeader)
+    this.relaychainConnection.subToNewHeads(this.submitNewRelaychainHeader)
   }
 
-  private submitNewCardanoBlock = async (block: RawCardanoBlock) => {
-    const parsedBlock = block as CardanoBlock // TODO: real parsing
-    await this.parachainConnection.submitNewCardanoBlock(parsedBlock)
+  private submitNewCardanoHeader = async (header: RawCardanoHeader) => {
+    const parsedHeader = header as CardanoHeader // TODO: real parsing
+    await this.parachainConnection.submitNewCardanoHeader(parsedHeader)
   }
 
-  private submitNewParachainBlock = async (block: RawParachainBlock) => {
-    const parsedBlock = block as ParachainBlock // TODO: real parsing
-    await this.cardanoConnection.submitNewParachainBlock(parsedBlock)
+  private submitNewParachainHeader = async (header: RawParachainHeader) => {
+    const parsedHeader = header as ParachainHeader // TODO: real parsing
+    await this.cardanoConnection.submitNewParachainHeader(parsedHeader)
   }
 
-  private submitNewRelaychainBlock = async (block: RawRelaychainBlock) => {
-    const parsedBlock = block as RelaychainBlock // TODO: real parsing
-    await this.cardanoConnection.submitNewParachainBlock(parsedBlock)
+  private submitNewRelaychainHeader = async (header: RawRelaychainHeader) => {
+    const parsedHeader = header as RelaychainHeader // TODO: real parsing
+    await this.cardanoConnection.submitNewParachainHeader(parsedHeader)
   }
 }

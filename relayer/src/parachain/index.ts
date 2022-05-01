@@ -1,6 +1,6 @@
 import '@polkadot/api-augment'
 import {ApiPromise, WsProvider, Keyring} from '@polkadot/api'
-import {CardanoBlock, RawParachainBlock} from './types'
+import {CardanoHeader, RawParachainHeader} from './types'
 export class ParachainConnection {
   private _api: ApiPromise | null = null
   private keyRing: Keyring
@@ -22,20 +22,20 @@ export class ParachainConnection {
   }
 
   subToNewHeads = async (
-    onNewBlock: (block: RawParachainBlock) => Promise<void>,
+    onNewHeader: (block: RawParachainHeader) => Promise<void>,
   ) => {
     const api = await this.api()
     // make a call to retrieve the current network head
-    api.rpc.chain.subscribeNewHeads(async (header) => {
+    api.rpc.chain.subscribeFinalizedHeads(async (header) => {
       console.log(`Parachain is at #${header.number}`)
-      await onNewBlock(null) // TODO:
+      await onNewHeader(header) // TODO:
     })
   }
 
-  submitNewCardanoBlock = async (block: CardanoBlock) => {
+  submitNewCardanoHeader = async (header: CardanoHeader) => {
     const api = await this.api()
     // api.tx.basicChannel.submit()
-    console.log('Submitted new Cardano block', {block})
+    console.log('Submitted new Cardano header')
   }
 
   // async getWalletByName() {

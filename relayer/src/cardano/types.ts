@@ -1,5 +1,5 @@
-export type RelaychainBlock = any
+export type RelaychainHeader = any
 
-export type ParachainBlock = any
+export type ParachainHeader = any
 
-export type RawCardanoBlock = any
+export type RawCardanoHeader = any

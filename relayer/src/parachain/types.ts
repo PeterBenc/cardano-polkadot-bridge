@@ -1,3 +1,6 @@
-export type RawParachainBlock = any
+import {Header} from '@polkadot/types/interfaces'
 
-export type CardanoBlock = any
+export type RawRelaychainHeader = Header
+export type RawParachainHeader = any
+
+export type CardanoHeader = any
