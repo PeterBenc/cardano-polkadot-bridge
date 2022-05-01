@@ -29,7 +29,7 @@ export class CardanoConnection {
       if (lastBlockId > highestBlockId) {
         highestBlockId = lastBlockId
         console.log(`Cardano chain is at #${highestBlockId}`)
-        // get all new blocks and iterate through them
+        //TODO: get all new blocks and iterate through them
         await onNewHeader({id: lastBlockId, hash: now.rows[0].hash})
         await wait(10000)
       }

@@ -6,6 +6,8 @@ export class ParachainConnection {
   private _api: ApiPromise | null = null
   private provider: WsProvider
   private _account: ReturnType<x.Keyring['addFromUri']> | null = null
+  private pendingHeaders: CardanoHeader[] = []
+  private txPending: boolean = false
 
   private x = true
 
@@ -53,12 +55,28 @@ export class ParachainConnection {
   }
 
   submitNewCardanoHeader = async (header: CardanoHeader) => {
-    // NOTE: this fn relies on cardano having a new block ~20 second, this should be batched
+    this.pendingHeaders.push(header)
     const api = await this.api()
-    const txHash = await api.tx.ethereumLightClient
-      .importHeader(header)
-      .signAndSend(this.account())
-    console.log(`Submitted new Cardano header in ${txHash}`)
+    if (this.txPending) {
+      return
+    }
+    const headersToSubmit = [...this.pendingHeaders]
+    this.pendingHeaders = []
+    this.txPending = true
+    const txs = headersToSubmit.map((h) => {
+      return api.tx.ethereumLightClient.importHeader(h)
+    })
+    console.log(
+      `Submitting ${headersToSubmit.length} txs with ids: ${headersToSubmit.map(
+        (t) => `${t.number},`,
+      )}`,
+    )
+    await api.tx.utility.batch(txs).signAndSend(this.account(), ({status}) => {
+      if (status.isInBlock) {
+        this.txPending = false
+        console.log(`New Cardano headers included in ${status.asInBlock}`)
+      }
+    })
   }
 
   // async getWalletByName() {
