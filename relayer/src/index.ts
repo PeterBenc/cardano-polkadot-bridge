@@ -13,7 +13,10 @@ const app = express()
 
 // Create connections
 const relaychainConnection = new RelayChainConnection()
-const cardanoConnection = new CardanoConnection()
+const cardanoConnection = new CardanoConnection(
+  process.env.CARDANO_SCRIPT_ADDRESS || '',
+  process.env.RELAYER_CARDANO_ADDRESS || '',
+)
 const parachainConnection = new ParachainConnection(
   process.env.PARACHAIN_WS_ENDPOINT || '',
 )
