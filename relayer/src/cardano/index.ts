@@ -23,17 +23,17 @@ export class CardanoConnection {
     let highestBlockId = 0
     while (true) {
       const now = await this.pool.query(
-        'SELECT id FROM block WHERE id=(select max(id) from block)',
+        'SELECT id, hash FROM block WHERE id=(select max(id) from block)',
       )
       const lastBlockId = Number(now.rows[0].id)
       if (lastBlockId > highestBlockId) {
         highestBlockId = lastBlockId
         console.log(`Cardano chain is at #${highestBlockId}`)
         // get all new blocks and iterate through them
-        await onNewHeader(null)
-        await wait(5000)
+        await onNewHeader({id: lastBlockId, hash: now.rows[0].hash})
+        await wait(10000)
       }
-      await wait(5000)
+      await wait(10000)
     }
   }
 

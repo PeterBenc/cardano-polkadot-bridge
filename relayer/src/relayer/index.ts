@@ -8,6 +8,7 @@ import {ParachainConnection} from '../parachain'
 import {CardanoHeader, RawParachainHeader} from '../parachain/types'
 import {RelayChainConnection} from '../polkadot'
 import {RawRelaychainHeader} from '../polkadot/types'
+import {parseRawCardanoHeader} from './utils'
 
 export class Relayer {
   private parachainConnection: ParachainConnection
@@ -25,13 +26,14 @@ export class Relayer {
   }
 
   run = async () => {
+    await this.parachainConnection.init()
     this.cardanoConnection.subToNewHeads(this.submitNewCardanoHeader)
     this.parachainConnection.subToNewHeads(this.submitNewParachainHeader)
     this.relaychainConnection.subToNewHeads(this.submitNewRelaychainHeader)
   }
 
   private submitNewCardanoHeader = async (header: RawCardanoHeader) => {
-    const parsedHeader = header as CardanoHeader // TODO: real parsing
+    const parsedHeader = parseRawCardanoHeader(header)
     await this.parachainConnection.submitNewCardanoHeader(parsedHeader)
   }
 
