@@ -18,6 +18,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
+    "@emurgo/cardano-serialization-lib-nodejs": "^10.0.4",
     "@polkadot/api": "7.10.1",
     "bignumber": "^1.1.0",
     "chalk": "^5.0.1",

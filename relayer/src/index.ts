@@ -1,5 +1,6 @@
 import express from 'express'
 import {CardanoConnection} from './cardano'
+import {Utxo} from './cardano/types'
 import {ParachainConnection} from './parachain'
 import {RelayChainConnection} from './polkadot'
 import {Relayer} from './relayer'

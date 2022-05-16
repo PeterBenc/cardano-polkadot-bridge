@@ -7,6 +7,7 @@ import {
   Utxo,
 } from './types'
 import {utxoQuery} from './constants'
+import {submitTx} from './tx/submit'
 
 const credentials = {
   user: 'cexplorer',
@@ -53,11 +54,9 @@ export class CardanoConnection {
     while (true) {
       const utxos = await getScriptUtxos()
       const newUtxo = utxos.find((u) =>
-        previousUtxos.every(
-          (pu) => pu.tx_hash !== u.tx_hash && pu.tx_index !== u.tx_index,
-        ),
+        previousUtxos.every((pu) => pu.tx_hash !== u.tx_hash),
       )
-      previousUtxos = utxos
+      previousUtxos = [...utxos]
       if (newUtxo) {
         console.log('New utxos on script address')
         onNewUtxo(newUtxo)
@@ -81,10 +80,12 @@ export class CardanoConnection {
     return (
       await this.pool.query({
         text: utxoQuery,
-        values: [
-          ['addr_test1vzvew0vvg5rc7wyd8kn559yv4rnstv638qzhthap0aegp4q449ncr'],
-        ],
+        values: [[address]],
       })
     ).rows as Utxo[]
+  }
+
+  unlockAsset = () => {
+    submitTx()
   }
 }

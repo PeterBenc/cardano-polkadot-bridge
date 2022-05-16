@@ -6,7 +6,7 @@ import {
   Utxo,
 } from '../cardano/types'
 import {ParachainConnection} from '../parachain'
-import {CardanoHeader, RawParachainHeader} from '../parachain/types'
+import {ParachainEvent, RawParachainHeader} from '../parachain/types'
 import {RelayChainConnection} from '../polkadot'
 import {RawRelaychainHeader} from '../polkadot/types'
 import {parseRawCardanoHeader} from './utils'
@@ -35,6 +35,8 @@ export class Relayer {
 
     // relay cardano events
     this.cardanoConnection.subToNewContractUtxos(this.relayCardanoEvent)
+    // relay parachain events
+    this.parachainConnection.subToEvents(this.relayParachainEvent)
   }
 
   private submitNewCardanoHeader = async (header: RawCardanoHeader) => {
@@ -52,12 +54,22 @@ export class Relayer {
     await this.cardanoConnection.submitNewParachainHeader(parsedHeader)
   }
 
-  private relayCardanoEvent = async (utxo: Utxo) => {
-    // we dont need to care about datum redeemer at all, sending means locking
-    // well not realy, some of them might be polkadot headers so we need to check for that
-    // so we always do "mint" call here
-
-    // basically the same would happend for polkadot, subsribe to burn events, call this and unlock
+  relayCardanoEvent = async (utxo: Utxo) => {
+    // if (utxo.) // check if utxo is new header or lock
     console.log(utxo)
+    await this.parachainConnection.mintAsset(
+      '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty', // TODO: get from utxo somehow
+      Number(utxo.amount),
+    )
+  }
+
+  relayParachainEvent = async (events: ParachainEvent[]) => {
+    events.forEach((e) => {
+      if (e.event.section === 'ethApp' && e.event.method === 'Burned') {
+        const [address, , amount] = e.event.data.map((d) => d.toString())
+        console.log(`${address} burned ${amount} PolkaADA`)
+        this.cardanoConnection.unlockAsset()
+      }
+    })
   }
 }

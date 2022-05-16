@@ -9,3 +9,7 @@ export type CardanoHeader = {
   parentHash: string
   transactionsRoot: string
 }
+
+export type ParachainEvent = {
+  event: {section: unknown; method: unknown; data: {toString: () => unknown}[]}
+}
