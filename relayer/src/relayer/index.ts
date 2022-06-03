@@ -46,12 +46,12 @@ export class Relayer {
 
   private submitNewParachainHeader = async (header: RawParachainHeader) => {
     const parsedHeader = header as ParachainHeader // TODO: real parsing
-    await this.cardanoConnection.submitNewParachainHeader(parsedHeader)
+    await this.cardanoConnection.submitNewPolkadotHeader(parsedHeader)
   }
 
   private submitNewRelaychainHeader = async (header: RawRelaychainHeader) => {
     const parsedHeader = header as RelaychainHeader // TODO: real parsing
-    await this.cardanoConnection.submitNewParachainHeader(parsedHeader)
+    await this.cardanoConnection.submitNewPolkadotHeader(parsedHeader)
   }
 
   relayCardanoEvent = async (utxo: Utxo) => {

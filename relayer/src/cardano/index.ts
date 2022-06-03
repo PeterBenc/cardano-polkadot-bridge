@@ -8,6 +8,7 @@ import {
 } from './types'
 import {utxoQuery} from './constants'
 import {submitTx} from './tx/submit'
+import {buildTx} from './tx/plan'
 
 const credentials = {
   user: 'cexplorer',
@@ -20,12 +21,30 @@ const credentials = {
 export class CardanoConnection {
   private pool: Pool
   private scriptAddress: string
-  private account: {address: string; sign?: () => string}
+  private userAddress: string
+  private relayerAccount: {
+    address: string
+    privKeyHex: string
+    pubKeyHex: string
+  }
+  private polkadotHeaders: (ParachainHeader | RelaychainHeader)[] = []
+  private submitting = false
 
-  constructor(scriptAddress: string, accountAddress: string, keypair?: string) {
+  constructor(
+    scriptAddress: string,
+    userAddress: string,
+    relayerAddress: string,
+    relayerPrivKeyHex: string,
+    relayerPubKeyHex: string,
+  ) {
     this.pool = new Pool(credentials)
     this.scriptAddress = scriptAddress
-    this.account = {address: accountAddress} // create sign funciton with private key
+    this.relayerAccount = {
+      address: relayerAddress,
+      privKeyHex: relayerPrivKeyHex,
+      pubKeyHex: relayerPubKeyHex,
+    }
+    this.userAddress = userAddress
   }
 
   subToNewHeads = async (
@@ -66,14 +85,30 @@ export class CardanoConnection {
     }
   }
 
-  submitNewParachainHeader = async (header: ParachainHeader) => {
-    const utxos = await this.getUtxosForAddress(this.account.address)
-    console.log('Submitted new parachain header')
-  }
-
-  submitNewRelaychainHeader = async (header: RelaychainHeader) => {
-    const utxos = await this.getUtxosForAddress(this.account.address)
-    console.log('Submitted new relaychain header')
+  submitNewPolkadotHeader = async (
+    header: ParachainHeader | RelaychainHeader,
+  ) => {
+    this.polkadotHeaders.push(header)
+    if (!this.submitting) {
+      this.submitting = true
+      const utxos = await this.getUtxosForAddress(this.relayerAccount.address)
+      console.log({utxos})
+      const utxo = utxos[utxos.length - 1]
+      const headersToSubmit = [...this.polkadotHeaders]
+      this.polkadotHeaders = []
+      const tx = buildTx(
+        utxo,
+        this.relayerAccount.privKeyHex,
+        this.relayerAccount.address,
+        this.scriptAddress,
+        null,
+      )
+      console.log(await submitTx(tx))
+      console.log(
+        `Submitted new ${headersToSubmit.length} parachain and relaychain headers`,
+      )
+      setTimeout(() => (this.submitting = false), 200000)
+    }
   }
 
   getUtxosForAddress = async (address: string) => {
@@ -85,7 +120,19 @@ export class CardanoConnection {
     ).rows as Utxo[]
   }
 
-  unlockAsset = () => {
-    submitTx()
+  unlockAsset = async () => {
+    const utxos = await this.getUtxosForAddress(this.relayerAccount.address)
+    const utxo = utxos[utxos.length - 1]
+    const scriptUtxos = await this.getUtxosForAddress(this.scriptAddress)
+    const scriptUtxo = scriptUtxos[scriptUtxos.length - 1]
+
+    const tx = buildTx(
+      utxo,
+      this.relayerAccount.privKeyHex,
+      this.relayerAccount.address,
+      this.userAddress, // TODO: user address
+      scriptUtxo,
+    )
+    await submitTx(tx)
   }
 }

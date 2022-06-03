@@ -6,7 +6,9 @@ export const buildTx = (
   privKeyHex: string,
   changeAddress: string,
   destAddress: string,
+  scriptUtxo: Utxo | null,
 ): Buffer => {
+  console.log({utxo, privKeyHex, changeAddress, destAddress, scriptUtxo})
   const linearFee = CardanoWasm.LinearFee.new(
     CardanoWasm.BigNum.from_str('44'),
     CardanoWasm.BigNum.from_str('155381'),
@@ -23,11 +25,19 @@ export const buildTx = (
 
   const txBuilder = CardanoWasm.TransactionBuilder.new(txBuilderCfg)
 
-  const prvKey = CardanoWasm.PrivateKey.from_normal_bytes(
+  console.log('privkey', privKeyHex)
+  const prvKey = CardanoWasm.PrivateKey.from_extended_bytes(
     Buffer.from(privKeyHex, 'hex'), // TODO: make sure it works
   )
 
+  console.log('okpriv')
+
   const shelleyChangeAddress = CardanoWasm.Address.from_bech32(changeAddress)
+
+  // if (scriptUtxo) {
+  // txBuilder.add_script_input()
+  // should I add script somehow?
+  // }
 
   txBuilder.add_input(
     shelleyChangeAddress,
@@ -68,6 +78,8 @@ export const buildTx = (
     witnesses,
     undefined, // transaction metadata
   )
+
+  console.log(Buffer.from(transaction.to_bytes()))
 
   return Buffer.from(transaction.to_bytes())
 }

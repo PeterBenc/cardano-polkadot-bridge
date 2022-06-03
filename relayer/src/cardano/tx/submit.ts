@@ -1,21 +1,11 @@
-import {exec} from 'child_process'
+import request from './request'
 
-const withExportString = (cmd: string) =>
-  `export CARDANO_NODE_SOCKET_PATH='/home/peter/Diploma/cp-bridge/cardano-polkadot-bridge/docker/cardano/node/node-ipc/node.socket' && ${cmd}`
-
-export const submitTx = () => {
-  exec(
-    withExportString('cardano-cli get-tip --testnet-magic 1097911063'),
-    (error, stdout, stderr) => {
-      if (error) {
-        console.log(`error: ${error.message}`)
-        return
-      }
-      if (stderr) {
-        console.log(`stderr: ${stderr}`)
-        return
-      }
-      console.log(`${stdout}`)
-    },
-  )
+export const submitTx = async (tx: Buffer) => {
+  const data = {
+    signedTx: tx.toString('base64'),
+  }
+  const url = 'https://explorer-testnet.adalite.io/api/v2/txs/signed'
+  return await request(url, 'POST', JSON.stringify(data), {
+    'Content-Type': 'application/json',
+  })
 }
